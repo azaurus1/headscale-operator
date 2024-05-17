@@ -165,7 +165,7 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 					Replicas: &replicas,
 					Selector: &metav1.LabelSelector{
 						MatchLabels: map[string]string{
-							"app": "headscale",
+							"app": name,
 						},
 					},
 					Template: apiv1.PodTemplateSpec{
@@ -173,7 +173,7 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 							Name:      name,
 							Namespace: "default", // using default for now, TODO: Change to namespace defined in server
 							Labels: map[string]string{
-								"app": "headscale",
+								"app": name,
 							},
 							Annotations: map[string]string{
 								"managed-by": headscaleOperatorAnnotation,
@@ -195,11 +195,9 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 									},
 									Ports: []apiv1.ContainerPort{
 										{
-											HostPort:      8080,
 											ContainerPort: 8080,
 										},
 										{
-											HostPort:      9090,
 											ContainerPort: 9090,
 										},
 									},
