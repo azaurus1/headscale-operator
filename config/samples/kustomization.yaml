@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- headscale_v1_apikey.yaml
+- headscale_v1_user.yaml
+- headscale_v1_headscale.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

@@ -1,0 +1,11 @@
+apiVersion: headscale.azaurus.dev/v1
+kind: User
+metadata:
+  labels:
+    app.kubernetes.io/name: headscale-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: user-sample
+spec:
+  id: "1"
+  name: "Liam"
+  createdAt: "2021-01-01T00:00:00Z"

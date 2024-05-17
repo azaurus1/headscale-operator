@@ -1,0 +1,84 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - apikeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - apikeys/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - apikeys/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - headscales
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - headscales/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - headscales/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - users
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - users/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - headscale.azaurus.dev
+  resources:
+  - users/status
+  verbs:
+  - get
+  - patch
+  - update

@@ -1,0 +1,12 @@
+apiVersion: headscale.azaurus.dev/v1
+kind: Headscale
+metadata:
+  labels:
+    app.kubernetes.io/name: headscale-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: headscale-sample-3
+  namespace: default
+spec:
+  name: headscale-3
+  version: v0.23.0-alpha11
+  config: headscale-config
