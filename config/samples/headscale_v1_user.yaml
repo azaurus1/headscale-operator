@@ -4,8 +4,39 @@ metadata:
   labels:
     app.kubernetes.io/name: headscale-operator
     app.kubernetes.io/managed-by: kustomize
-  name: user-sample
+  name: user-sample-1
+  namespace: default
 spec:
-  id: "1"
   name: "Liam"
-  createdAt: "2021-01-01T00:00:00Z"
+  createdAt: "2021-09-01T00:00:00Z"
+  headscaleServerRef:
+    name: headscale-1
+    namespace: default
+# ---
+# apiVersion: headscale.azaurus.dev/v1
+# kind: User
+# metadata:
+#   labels:
+#     app.kubernetes.io/name: headscale-operator
+#     app.kubernetes.io/managed-by: kustomize
+#   name: user-sample-2
+#   namespace: default
+# spec:
+#   name: "Liam"
+#   headscaleServerRef:
+#     name: headscale-sample-2
+#     namespace: default
+# ---
+# apiVersion: headscale.azaurus.dev/v1
+# kind: User
+# metadata:
+#   labels:
+#     app.kubernetes.io/name: headscale-operator
+#     app.kubernetes.io/managed-by: kustomize
+#   name: user-sample-3
+#   namespace: default
+# spec:
+#   name: "Liam"
+#   headscaleServerRef:
+#     name: headscale-sample-3
+#     namespace: default

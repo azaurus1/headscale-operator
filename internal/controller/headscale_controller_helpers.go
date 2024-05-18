@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"path"
 
 	headscalev1 "github.com/azaurus1/headscale-operator/api/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -12,7 +13,14 @@ import (
 	apiv1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
+
+const runSocketsPath = "/var/run/headscale/"
+const socketName = "headscale.sock"
+const grpcInsecurePort = 8082 // TODO: make configurable
+
+var unixSocket = path.Join(runSocketsPath, socketName)
 
 func (r *HeadscaleReconciler) EnsureHeadscaleServer(ctx context.Context, server *headscalev1.Headscale, name string, version string, configMapName string) error {
 	log := log.FromContext(ctx)
@@ -241,6 +249,10 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 											Name:      "config-volume",
 											MountPath: "/etc/headscale",
 										},
+										{
+											Name:      "run",
+											MountPath: runSocketsPath,
+										},
 									},
 									Ports: []apiv1.ContainerPort{
 										{
@@ -248,6 +260,41 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 										},
 										{
 											ContainerPort: 9090,
+										},
+									},
+								},
+								{
+									Name:  "socat",
+									Image: "alpine/socat:1.7.4.3-r0",
+									Args: []string{
+										"tcp-listen:8082,fork,reuseaddr",
+										fmt.Sprintf("unix-connect:%s", unixSocket),
+									},
+									Ports: []apiv1.ContainerPort{
+										{
+											Name:          "grpc-insecure",
+											ContainerPort: int32(grpcInsecurePort),
+										},
+									},
+									VolumeMounts: []apiv1.VolumeMount{
+										{
+											Name:      "run",
+											ReadOnly:  true,
+											MountPath: runSocketsPath,
+										},
+									},
+									LivenessProbe: &apiv1.Probe{
+										ProbeHandler: apiv1.ProbeHandler{
+											TCPSocket: &apiv1.TCPSocketAction{
+												Port: intstr.FromString("grpc-insecure"),
+											},
+										},
+									},
+									ReadinessProbe: &apiv1.Probe{
+										ProbeHandler: apiv1.ProbeHandler{
+											TCPSocket: &apiv1.TCPSocketAction{
+												Port: intstr.FromString("grpc-insecure"),
+											},
 										},
 									},
 								},
@@ -261,6 +308,12 @@ func (r *HeadscaleReconciler) EnsureHeadscaleDeployment(ctx context.Context, hea
 												Name: configMapName,
 											},
 										},
+									},
+								},
+								{
+									Name: "run",
+									VolumeSource: apiv1.VolumeSource{
+										EmptyDir: &apiv1.EmptyDirVolumeSource{},
 									},
 								},
 							},
@@ -311,6 +364,11 @@ func (r *HeadscaleReconciler) EnsureHeadscaleService(ctx context.Context, headsc
 						{
 							Name:     "tcp-9090",
 							Port:     9090,
+							Protocol: apiv1.ProtocolTCP,
+						},
+						{
+							Name:     "grpc-insecure",
+							Port:     8082,
 							Protocol: apiv1.ProtocolTCP,
 						},
 					},

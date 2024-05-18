@@ -1,0 +1,41 @@
+syntax = "proto3";
+package headscale.v1;
+option  go_package = "github.com/azaurus1/headscale-operator/gen/go/v1";
+
+import "google/api/annotations.proto";
+import "proto/user.proto";
+
+service HeadscaleService {
+    // --- User start ---
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/user/{name}"
+        };
+    }
+
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user"
+            body: "*"
+        };
+    }
+
+    rpc RenameUser(RenameUserRequest) returns (RenameUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/user/{old_name}/rename/{new_name}"
+        };
+    }
+
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+        option (google.api.http) = {
+            delete: "/api/v1/user/{name}"
+        };
+    }
+
+    rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/user"
+        };
+    }
+    // --- User end ---
+}

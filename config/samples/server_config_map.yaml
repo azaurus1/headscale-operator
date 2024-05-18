@@ -38,7 +38,7 @@ data:
     #
     # For production:
     # grpc_listen_addr: 0.0.0.0:50443
-    grpc_listen_addr: 127.0.0.1:50443
+    grpc_listen_addr: 0.0.0.0:50443
 
     # Allow the gRPC admin interface to run in INSECURE
     # mode. This is not recommended as the traffic will
@@ -203,7 +203,7 @@ data:
     log:
       # Output formatting for logs: text or json
       format: text
-      level: info
+      level: debug
 
     # Path to a file containg ACL policies.
     # ACLs can be defined as YAML or HUJSON.
@@ -276,7 +276,7 @@ data:
     # Unix socket used for the CLI to connect without authentication
     # Note: for production you will want to set this to something like:
     unix_socket: /var/run/headscale/headscale.sock
-    unix_socket_permission: "0770"
+    unix_socket_permission: "0777"
     #
     # headscale supports experimental OpenID connect support,
     # it is still being tested and might have some bugs, please

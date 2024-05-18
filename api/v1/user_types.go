@@ -23,6 +23,11 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+type NamespacedName struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
 // UserSpec defines the desired state of User
 // +kubebuilder:resource:scope=Namespaced
 type UserSpec struct {
@@ -30,17 +35,16 @@ type UserSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of User. Edit user_types.go to remove/update
-	ID        string       `json:"id"`
-	Name      string       `json:"name"`
-	CreatedAt *metav1.Time `json:"createdAt"`
+	ID                 string         `json:"id,omitempty"`
+	Name               string         `json:"name"`
+	HeadscaleServerRef NamespacedName `json:"headscaleServerRef"`
+	CreatedAt          *metav1.Time   `json:"createdAt,omitempty"`
 }
 
 // UserStatus defines the observed state of User
 type UserStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	ID        string       `json:"id"`
-	Name      string       `json:"name"`
 	CreatedAt *metav1.Time `json:"createdAt"`
 }
 

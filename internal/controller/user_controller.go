@@ -26,6 +26,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	headscalev1 "github.com/azaurus1/headscale-operator/api/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 )
 
 const (
@@ -69,8 +71,6 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 	}
 
 	// update the user status with current state
-	user.Status.ID = user.Spec.ID
-	user.Status.Name = user.Spec.Name
 	user.Status.CreatedAt = user.Spec.CreatedAt
 	if err := r.Status().Update(ctx, user); err != nil {
 		log.Error(err, "unable to update User status")
@@ -109,8 +109,31 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 
 func (r *UserReconciler) ensureUser(ctx context.Context, user *headscalev1.User, userName string) error {
 	log := log.FromContext(ctx)
-
 	log.Info("This is where we create the user headscale")
+
+	headscaleDeployment := appsv1.Deployment{}
+
+	// check for which headscale server we are deploying this to (user.spec.headscaleServerRef(name/namespace))
+	err := r.Get(ctx, client.ObjectKey{Name: user.Spec.HeadscaleServerRef.Name, Namespace: user.Spec.HeadscaleServerRef.Namespace}, &headscaleDeployment)
+	if err != nil {
+		// deployment doesnt exist -> headscale isnt deployed, error
+		if apierrors.IsNotFound(err) {
+			log.Error(err, "headscale server is not deployed")
+			return err
+		}
+	}
+	if !(headscaleDeployment.Status.ReadyReplicas != int32(0) && headscaleDeployment.Status.ReadyReplicas > 0) {
+		log.Error(err, "headscale server has no working replicas")
+		return err
+	}
+	// we should make sure the user doesnt exist already, if it does we will send a PUT instead
+
+	// use the service name e.g. svc-[headscale.spec.name].[headscale.metadata.namespace].svc.cluster.local to communicate - api/v1/user
+	err = r.CreateUserViaService(ctx, user)
+	if err != nil {
+		log.Error(err, "could not create a user via the service")
+		return err
+	}
 
 	return nil
 }
