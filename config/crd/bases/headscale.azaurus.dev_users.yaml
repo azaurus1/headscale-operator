@@ -39,9 +39,6 @@ spec:
           spec:
             description: UserSpec defines the desired state of User
             properties:
-              createdAt:
-                format: date-time
-                type: string
               headscaleServerRef:
                 properties:
                   name:
@@ -52,11 +49,10 @@ spec:
                 - name
                 - namespace
                 type: object
-              id:
-                description: Foo is an example field of User. Edit user_types.go to
-                  remove/update
-                type: string
               name:
+                description: |-
+                  INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
                 type: string
             required:
             - headscaleServerRef
@@ -66,13 +62,13 @@ spec:
             description: UserStatus defines the observed state of User
             properties:
               createdAt:
+                format: date-time
+                type: string
+              id:
                 description: |-
                   INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
                   Important: Run "make" to regenerate code after modifying this file
-                format: date-time
                 type: string
-            required:
-            - createdAt
             type: object
         type: object
     served: true

@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -28,6 +29,7 @@ import (
 	headscalev1 "github.com/azaurus1/headscale-operator/api/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const (
@@ -67,11 +69,13 @@ func (r *UserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 
 	// Ensure the user with the name exists, if not, create it
 	if err := r.ensureUser(ctx, user, user.Spec.Name); err != nil {
-		log.Error(err, "unable to ensure user", "user", user.Spec.ID)
+		log.Error(err, "unable to ensure user", "user", user.Spec.Name)
 	}
 
 	// update the user status with current state
-	user.Status.CreatedAt = user.Spec.CreatedAt
+	user.Status.CreatedAt = metav1.Now()
+	log.Info("setting created at...")
+	log.Info(user.Status.CreatedAt.String())
 	if err := r.Status().Update(ctx, user); err != nil {
 		log.Error(err, "unable to update User status")
 		return ctrl.Result{}, err
@@ -141,8 +145,28 @@ func (r *UserReconciler) ensureUser(ctx context.Context, user *headscalev1.User,
 func (r *UserReconciler) DeleteExternalResources(ctx context.Context, user *headscalev1.User) error {
 	log := log.FromContext(ctx)
 
-	log.Info("This is where we delete a user from headscale")
+	headscaleUser := &headscalev1.User{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      strings.ToLower(user.Spec.Name),
+			Namespace: "default",
+		},
+	}
 
+	// TODO: delete the object in headscale server
+	err := r.DeleteUserViaService(ctx, user)
+	if err != nil {
+		log.Error(err, "could not delete the user via the headscale service")
+		return err
+	}
+
+	// Delete the object in kubeapi
+	err = r.Delete(ctx, headscaleUser)
+	if err != nil {
+		log.Error(err, "unable to delete the headscale user")
+		return err
+	}
+
+	log.Info("all resources deleted for headscale user")
 	return nil
 }
 

@@ -33,19 +33,16 @@ type NamespacedName struct {
 type UserSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of User. Edit user_types.go to remove/update
-	ID                 string         `json:"id,omitempty"`
 	Name               string         `json:"name"`
 	HeadscaleServerRef NamespacedName `json:"headscaleServerRef"`
-	CreatedAt          *metav1.Time   `json:"createdAt,omitempty"`
 }
 
 // UserStatus defines the observed state of User
 type UserStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	CreatedAt *metav1.Time `json:"createdAt"`
+	ID        string      `json:"id,omitempty"`
+	CreatedAt metav1.Time `json:"createdAt,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -4,11 +4,10 @@ metadata:
   labels:
     app.kubernetes.io/name: headscale-operator
     app.kubernetes.io/managed-by: kustomize
-  name: user-sample-1
+  name: user-sample-2
   namespace: default
 spec:
-  name: "Liam"
-  createdAt: "2021-09-01T00:00:00Z"
+  name: "liam"
   headscaleServerRef:
     name: headscale-1
     namespace: default
