@@ -6,9 +6,4 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: apikey-sample
 spec:
-  id: "1"
-  createdAt: "2021-01-01T00:00:00Z"
-  lastSeen: "2021-01-01T00:00:00Z"
-  expiration: "2021-01-02T00:00:00Z"
-  prefix: ""
-
+  timeToExpire: 10000000 # 3 months 23 days

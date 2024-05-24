@@ -29,24 +29,16 @@ import (
 type ApiKeySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	TimeToExpire int32 `json:"timeToExpire"` //When we initialise an API key, we will use this to create the Expiration
 
-	// Foo is an example field of ApiKey. Edit apikey_types.go to remove/update
-	ID         string       `json:"id"`
-	Prefix     string       `json:"prefix"`
-	Expiration *metav1.Time `json:"expiration"`
-	CreatedAt  *metav1.Time `json:"createdAt"`
-	LastSeen   *metav1.Time `json:"lastSeen"`
 }
 
 // ApiKeyStatus defines the observed state of ApiKey
 type ApiKeyStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	ID         string       `json:"id"`
-	Prefix     string       `json:"prefix"`
-	Expiration *metav1.Time `json:"expiration"`
-	CreatedAt  *metav1.Time `json:"createdAt"`
-	LastSeen   *metav1.Time `json:"lastSeen"`
+	KeySecret string      `json:"keysecret"` // this is the API_KEY, we could possibly try put this into a Secret
+	CreatedAt metav1.Time `json:"createdAt"`
 }
 
 //+kubebuilder:object:root=true

@@ -39,27 +39,14 @@ spec:
           spec:
             description: ApiKeySpec defines the desired state of ApiKey
             properties:
-              createdAt:
-                format: date-time
-                type: string
-              expiration:
-                format: date-time
-                type: string
-              id:
-                description: Foo is an example field of ApiKey. Edit apikey_types.go
-                  to remove/update
-                type: string
-              lastSeen:
-                format: date-time
-                type: string
-              prefix:
-                type: string
+              timeToExpire:
+                description: |-
+                  INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                format: int32
+                type: integer
             required:
-            - createdAt
-            - expiration
-            - id
-            - lastSeen
-            - prefix
+            - timeToExpire
             type: object
           status:
             description: ApiKeyStatus defines the observed state of ApiKey
@@ -67,25 +54,14 @@ spec:
               createdAt:
                 format: date-time
                 type: string
-              expiration:
-                format: date-time
-                type: string
-              id:
+              keysecret:
                 description: |-
                   INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
                   Important: Run "make" to regenerate code after modifying this file
                 type: string
-              lastSeen:
-                format: date-time
-                type: string
-              prefix:
-                type: string
             required:
             - createdAt
-            - expiration
-            - id
-            - lastSeen
-            - prefix
+            - keysecret
             type: object
         type: object
     served: true
